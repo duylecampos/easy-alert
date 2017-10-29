@@ -1,10 +1,11 @@
 import os
+import datetime
 
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, jsonify
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt import JWT
+from flask_jwt_extended import JWTManager, get_jwt_identity
 
 import routes
 from settings import db
@@ -16,13 +17,17 @@ def create_app(db_uri):
     load_dotenv(dotenv_path)
 
     app = Flask(__name__)
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    app.config['ERROR_404_HELP'] = False
+
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(hours=1)
 
     api = Api(app)
     db.init_app(app)
-    jwt = JWT(app, authenticate, identity)
+    jwt = JWTManager(app)
 
     routes.load(api)
 

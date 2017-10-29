@@ -2,11 +2,13 @@ import bcrypt
 
 from flask import request
 from flask_restful import Resource
-from flask_jwt import jwt_required, current_identity
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import get_jwt_identity
 
 import models
 from settings import db
+
+from utils import login_required
 
 class User(Resource):
 
@@ -22,6 +24,7 @@ class User(Resource):
             return 'Unavailable username!', 400
         return '', 201
 
-    @jwt_required()
+    @login_required
     def get(self):
-        return {'logged_user': current_identity.username}
+        current_identity = get_jwt_identity()
+        return {'logged_user': current_identity['identity']}
