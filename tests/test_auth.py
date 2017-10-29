@@ -5,7 +5,7 @@ from flask_testing import TestCase
 
 from settings import db
 from app import create_app
-from authentication import authenticate
+from utils import authenticate
 import models
 
 
@@ -15,8 +15,6 @@ class TestAuth(TestCase):
     TESTING = True
 
     def create_app(self):
-
-        # pass in test configuration
         return create_app(self.SQLALCHEMY_DATABASE_URI)
 
     def setUp(self):

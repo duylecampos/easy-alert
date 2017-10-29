@@ -6,6 +6,8 @@ from functools import wraps
 
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
+from models import Auth
+
 _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
 def slugify(text, delim=u'-'):
@@ -24,3 +26,9 @@ def login_required(f):
         identity = get_jwt_identity()
         return f(*args, **kwargs)
     return decorated_function
+
+def authenticate(username, password): 
+    user = Auth.query.filter_by(username=username).first() 
+    if user and bcrypt.checkpw(password.encode('utf-8'), user.password): 
+        return user
+    return None

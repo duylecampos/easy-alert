@@ -9,7 +9,6 @@ from flask_jwt_extended import JWTManager, get_jwt_identity
 
 import routes
 from settings import db
-from authentication import authenticate, identity
 
 def create_app(db_uri):
     # Load config file to environment var
